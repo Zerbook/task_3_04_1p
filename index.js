@@ -4,7 +4,7 @@ import chalk from "chalk";
 const port = 3000;
 
 const server = http.createServer((req, res) => {
-  console.log("Server!");
+  console.log("Request object:");
 
   res.end("Hello from server!");
 });
