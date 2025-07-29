@@ -1,0 +1,9 @@
+npm init
+
+npm i yargs
+
+npm i @types/yargs
+
+npm i chalk
+
+node index remove --id=1753784356263
