@@ -38,7 +38,7 @@ export async function printNotes() {
   });
 }
 
-export async function remove(id) {
+export async function removeNote(id) {
   const notes = await getNotes();
   const filtered = notes.filter((note) => note.id !== id);
 
