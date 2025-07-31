@@ -48,3 +48,18 @@ export async function removeNote(id) {
   await fs.writeFile(notesPath, JSON.stringify(filtered, null, 2));
   console.log(chalk.red.inverse(`Note with id ${id} was removed.`));
 }
+
+export async function updateNote(id, title) {
+  const notes = await getNotes();
+
+  const index = notes.findIndex((note) => note.id === id);
+  if (index === -1) {
+    console.log(chalk.red.inverse("Note not found"));
+    return;
+  }
+
+  notes[index].title = title;
+
+  await fs.writeFile(notesPath, JSON.stringify(notes, null, 2));
+  console.log(chalk.blue.inverse(`Note ${id} was updated`));
+}

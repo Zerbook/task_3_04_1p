@@ -2,7 +2,12 @@ import chalk from "chalk";
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { addNote, getNotes, removeNote } from "./notes.controller.mjs";
+import {
+  addNote,
+  getNotes,
+  removeNote,
+  updateNote,
+} from "./notes.controller.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +26,7 @@ app.use(
     extended: true,
   })
 );
+app.use(express.json());
 
 app.get("/", async (req, res) => {
   res.render("index", {
@@ -46,6 +52,18 @@ app.delete("/:id", async (req, res) => {
     notes: await getNotes(),
     created: false,
   });
+});
+
+app.put("/:id", async (req, res) => {
+  const id = req.params.id;
+  const { title } = req.body;
+
+  try {
+    await updateNote(id, title);
+    res.status(200).json({ message: "Updated" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update note" });
+  }
 });
 
 app.listen(port, () => {
