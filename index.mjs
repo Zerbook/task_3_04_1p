@@ -1,5 +1,6 @@
 import http from "http";
 import chalk from "chalk";
+import express from "express";
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -12,31 +13,23 @@ const port = 3000;
 
 const basePath = path.join(__dirname, "pages");
 
-const server = http.createServer(async (req, res) => {
-  if (req.method === "GET") {
-    const content = await fs.readFile(path.join(basePath, "index.html"));
-    res.writeHead(200, {
-      "Content-Type": "text/html",
-    });
-    res.end(content);
-  } else if (req.method === "POST") {
-    const body = [];
-    res.writeHead(200, {
-      "Content-Type": "text/plain; charset=utf-8",
-    });
+const app = express();
 
-    req.on("data", (data) => {
-      body.push(Buffer.from(data));
-    });
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
-    req.on("end", () => {
-      const title = body.toString().split("=")[1].replaceAll("+", " ");
-      addNote(title);
-      res.end(`Title = ${title}`);
-    });
-  }
+app.get("/", (req, res) => {
+  res.sendFile(path.join(basePath, "index.html"));
 });
 
-server.listen(port, () => {
+app.post("/", async (req, res) => {
+  await addNote(req.body.title);
+  res.sendFile(path.join(basePath, "index.html"));
+});
+
+app.listen(port, () => {
   console.log(chalk.green(`Server has been started on port ${port}...`));
 });
